@@ -27,24 +27,80 @@
 <str>ret <str>For <str>While <str>True <str>False <str>print <str>scan <str>Struct 
 <str>Typedef <str>Break <str>Continue <str>sqob <str>sqcb <str>ob <str>cb <str>fob 
 <str>fcb <str>scolon <str>comma <str> slope <str>area  <str>point  <str>centroid 
-<str>cc  <str>ic  <str>oc  <str>cr  <str>ir  <str>triangle <str>id 
+<str>cc  <str>ic  <str>oc  <str>cr  <str>ir  <str>triangle <str>main <str>id 
 
 %%
 
 S : 
   | StructHelp S
   | Method S;
+/* Main method is mandatary in our language GeoC. It will be implemented by semantic deadline */
 
 StructHelp : Struct id fob StructBody fcb scolon;
 
-StructBody : Declstmt scolon
-           | Declstmt scolon StructBody;
+StructBody : Declstmt 
+           | Declstmt StructBody;
 /* Struct body cannot be empty */
 
-Declstmt : Type IDCID;
+Declstmt : Type IDCID scolon;
 
 IDCID : id comma IDCID 
-      | id;
+      | id sqob number sqcb comma IDCID
+      | id
+      | id sqob number sqcb;
+
+constant : number 
+         | fnumber
+         | True
+         | False
+         | literal
+         | cliteral;
+
+Method : Type id ob Arguments cb fob MethodBody fcb;
+
+Arguments : Type id 
+          | Type id comma Arguments;
+
+MethodBody : 
+           | Stmt MethodBody;
+/* return statement for a non void function is also mandatory in our language. 
+It will be implemented by the semantic deadline  */
+
+Stmt : Declstmt
+     | CallStmt scolon 
+     | ExprStmt
+     | Loop
+     | CondStmt
+     | UopStmt
+     | RetStmt
+     | PrintStmt 
+     | fob MethodBody fcb
+/* Empty scopes are not allowed in our language */
+
+predicatePart : constant
+              | id  
+              | id comp id
+              | id comp constant
+              | constant comp id
+              | constant comp constant
+              | ob predicatePart cb;
+              
+predicate : predicatePart
+          | predicatePart logic predicate;  
+/* calling other functions in predicated is not allowed in GeoC */
+
+CondStmt : If ob predicate cb fob MethodBody fcb ElseHelp;
+
+ElseHelp : 
+         | Else fob MethodBody fcb
+         | Else CondStmt;
+
+UopStmt : id uop;
+
+
+
+
+
 
 
 

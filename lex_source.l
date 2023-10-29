@@ -54,6 +54,7 @@ struct ("struct")
 typedef ("typedef")
 break ("break")
 continue ("continue")
+main ("main")
 
 %%
 ^[ ]*\n {yylineno++;}
@@ -111,6 +112,7 @@ continue ("continue")
 {cr}       {return cr;}
 {ir}       {return ir;}
 {triangle} {return triangle;}
+{main}     {return main;}
 
 {id}       {return id; }
 
