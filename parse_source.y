@@ -4,8 +4,12 @@
     #include <string.h>
 
     int yylex();
+    int yyerror(char *s);
+    int main = 0;
+    // used for handling errors such as manin function not found
     extern FILE* yyin;
     extern FILE* yyout;
+    
     // when  you run bison -d -t parse_source.y, two files are generated parse_source.tab.c and parse_source.tab.h
     // parse_source.tab.c contains the C code corresponding to our grammar
     // parse_source.tab.h is like the header of parse_source.tab.c, it contains the tokens the parser can accept 
@@ -27,9 +31,30 @@
 
 %%
 
+S : 
+  | StructHelp S
+  | Method S;
+
+StructHelp : Struct id fob StructBody fcb scolon;
+
+StructBody : Declstmt scolon
+           | Declstmt scolon StructBody;
+/* Struct body cannot be empty */
+
+Declstmt : Type IDCID;
+
+IDCID : id comma IDCID 
+      | id;
+
+
+
+
 
 %%
 
+int yyerror(char *s){
+
+}
 int main(int argc, char* argv[])
 {
     #ifdef YYDEBUG
