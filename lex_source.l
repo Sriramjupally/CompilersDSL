@@ -49,6 +49,12 @@ centroid ("Centroid")
 oc ("Orthocenter")
 cr ("Circumradius")
 ir ("Inradius")
+triangle ("triangle")
+struct ("struct")
+typedef ("typedef")
+break ("break")
+continue ("continue")
+
 %%
 ^[ ]*\n {yylineno++;}
 /* This line is there to increase the count even in case of empty lines. useful while showing errors */
@@ -79,7 +85,10 @@ ir ("Inradius")
 {false}    {return False; }
 {print}    {return print;}
 {scan}     {return scan;}
-
+{struct}   {return Struct;}
+{typedef}  {return Typedef;}
+{break}    {return Break;}
+{continue} {return Continue;}
 
 {sqob}     {return sqob; }
 {sqcb}     {return sqcb; }
@@ -101,10 +110,12 @@ ir ("Inradius")
 {oc}       {return oc;}
 {cr}       {return cr;}
 {ir}       {return ir;}
+{triangle} {return triangle;}
 
 {id}       {return id; }
 
-/* . { fprintf(pt,"lexical error"); fflush(pt); return 0;} */
+. {printf("lexical error: token %s is undefined\n",yytext); }
+
 %%
 
 int yywrap(){return 1;}
