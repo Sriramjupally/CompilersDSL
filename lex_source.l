@@ -56,6 +56,7 @@ typedef ("typedef")
 break ("break")
 continue ("continue")
 main ("main")
+dot (".")
 
 %%
 ^[ ]*\n {yylineno++;
@@ -104,6 +105,7 @@ main ("main")
 
 {scolon}   {return scolon; }
 {comma}    {return comma; }
+{dot}      {return dot; } 
 
 {slope}    {return slope;}
 {area}     {return area;}

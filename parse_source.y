@@ -26,7 +26,7 @@
 <str>assignment <str>bop <str>add <str>uop  <str>comp <str>logic  <str>If <str>Else  
 <str>ret <str>For <str>While <str>True <str>False <str>print <str>scan <str>Struct 
 <str>Typedef <str>Break <str>Continue <str>sqob <str>sqcb <str>ob <str>cb <str>fob 
-<str>fcb <str>scolon <str>comma <str> slope <str>area  <str>point  <str>centroid 
+<str>fcb <str>scolon <str>comma <str>dot <str> slope <str>area  <str>point  <str>centroid 
 <str>cc  <str>ic  <str>oc  <str>cr  <str>ir  <str>triangle <str>main <str>id 
 
 %%
@@ -44,7 +44,8 @@ StructBody : Declstmt
            | Declstmt StructBody;
 /* Struct body cannot be empty */
 
-Declstmt : Type IDCID scolon;
+Declstmt : Type IDCID scolon
+         | Struct id IDCID scolon;    
 
 IDCID : id comma IDCID 
       | id sqob number sqcb comma IDCID
@@ -81,25 +82,13 @@ Stmt : Declstmt
 
 predicatePart : constant
               | id  
-              | id Bop id
-              | id Bop constant
-              | constant Bop id
-              | constant Bop constant
-              | id logic id
-              | id logic constant
-              | constant logic id
-              | constant logic constant
-              | id comp id
-              | id comp constant
-              | constant comp id
-              | constant comp constant
               | CallStmt
-              | ob predicatePart cb;
+              | ob predicate cb;
               
 predicate : predicatePart
-          | predicatePart comp predicate
+          | predicatePart logic predicate
           | predicatePart Bop predicate
-          | predicatePart logic predicate;  
+          | predicatePart comp predicate;  
 
 /* calling other functions in predicated is not allowed in GeoC */
 
@@ -109,7 +98,8 @@ ElseHelp :
          | Else fob MethodBody fcb
          | Else CondStmt;
 
-ExprStmt : id assignment predicate scolon;
+ExprStmt : id assignment predicate scolon
+         | id dot id assignment predicate;
 
 CallStmt : id ob CallArguments cb;
 
