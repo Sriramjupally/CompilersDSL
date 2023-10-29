@@ -44,13 +44,20 @@ StructBody : Declstmt
            | Declstmt StructBody;
 /* Struct body cannot be empty */
 
-Declstmt : Type IDCID scolon
+Declstmt : Type IDCID1 scolon
          | Struct id IDCID scolon;    
 
 IDCID : id comma IDCID 
       | id sqob number sqcb comma IDCID
       | id
       | id sqob number sqcb;
+    
+IDCID1 : id assignment predicate comma IDCID1
+       | id comma IDCID1 
+       | id sqob number sqcb comma IDCID1
+       | id 
+       | id assignment predicate;
+       | id sqob number sqcb;
 
 constant : number 
          | fnumber
