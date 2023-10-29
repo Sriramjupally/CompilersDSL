@@ -23,7 +23,7 @@
 }
 
 %token  <str>Type <str>Void <str>number <str>fnumber <str>literal <str>cliteral 
-<str>assignment <str>bop <str>uop  <str>comp <str>logic  <str>If <str>Else  
+<str>assignment <str>bop <str>add <str>uop  <str>comp <str>logic  <str>If <str>Else  
 <str>ret <str>For <str>While <str>True <str>False <str>print <str>scan <str>Struct 
 <str>Typedef <str>Break <str>Continue <str>sqob <str>sqcb <str>ob <str>cb <str>fob 
 <str>fcb <str>scolon <str>comma <str> slope <str>area  <str>point  <str>centroid 
@@ -35,6 +35,8 @@ S :
   | StructHelp S
   | Method S;
 /* Main method is mandatary in our language GeoC. It will be implemented by semantic deadline */
+
+Bop : bop | add
 
 StructHelp : Struct id fob StructBody fcb scolon;
 
@@ -79,14 +81,26 @@ Stmt : Declstmt
 
 predicatePart : constant
               | id  
+              | id Bop id
+              | id Bop constant
+              | constant Bop id
+              | constant Bop constant
+              | id logic id
+              | id logic constant
+              | constant logic id
+              | constant logic constant
               | id comp id
               | id comp constant
               | constant comp id
               | constant comp constant
+              | CallStmt
               | ob predicatePart cb;
               
 predicate : predicatePart
+          | predicatePart comp predicate
+          | predicatePart Bop predicate
           | predicatePart logic predicate;  
+
 /* calling other functions in predicated is not allowed in GeoC */
 
 CondStmt : If ob predicate cb fob MethodBody fcb ElseHelp;
@@ -94,6 +108,44 @@ CondStmt : If ob predicate cb fob MethodBody fcb ElseHelp;
 ElseHelp : 
          | Else fob MethodBody fcb
          | Else CondStmt;
+
+ExprStmt : id assignment predicate scolon;
+
+CallStmt : id ob CallArguments cb;
+
+CallArguments : id
+              | constant
+              | id comma CallArguments
+              | constant comma CallArguments  
+
+RetStmt : ret constant scolon
+        | ret scolon
+        | ret id scolon;
+
+PrintStmt : print ob PrintHelp cb scolon;
+
+PrintHelp : id
+          | literal
+          | constant
+          | id add PrintHelp
+          | literal add PrintHelp
+          | constant add PrintHelp;
+
+Loop : Fo 
+     | Whil;
+
+Fo : For ob ForHelp scolon predicate scolon UopStmt cb fob ForBody fcb;
+
+ForHelp : Declstmt 
+        | ExprStmt;
+
+ForBody : 
+        | Stmt ForBody
+        | Break scolon
+        | Continue scolon;
+
+
+
 
 UopStmt : id uop;
 

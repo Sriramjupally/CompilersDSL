@@ -13,7 +13,8 @@ letter [a-zA-Z]
 digit [0-9]
 number [-]?[1-9]?{digit}+
 fnumber {number}("."){digit}+
-bop ("+"|"-"|"*"|"/"|"%")
+bop ("-"|"*"|"/"|"%")
+addition("+")
 uop ("++"|"--") 
 type ("int"|"char"|"string"|"bool"|"long"|"float"|"double")
 void ("void")
@@ -73,6 +74,7 @@ main ("main")
 
 {assignment} {return assignment; }
 {bop}      {return bop; }
+{addition} {return addition;}
 {uop}      {return uop; }
 {comparision}  {return comp; }
 {logic}    {return logic; }
