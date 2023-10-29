@@ -58,8 +58,9 @@ continue ("continue")
 main ("main")
 
 %%
-^[ ]*\n {yylineno++;}
-/* This line is there to increase the count even in case of empty lines. useful while showing errors */
+^[ ]*\n {yylineno++;
+/* This line is there to increase the count even in case of empty lines. useful while showing errors */}
+
 
 
 
@@ -67,8 +68,8 @@ main ("main")
 {void}     {return Void; }
 
 {number}   {return number; }
-{fnumber}  {return fnumber; }
-/* number and floating point numbers are differentiated for potential use in semantic analysis */
+{fnumber}  {return fnumber; 
+/* number and floating point numbers are differentiated for potential use in semantic analysis */}
 {literal}  {return literal;}
 {cliteral} {return cliteral;}
 

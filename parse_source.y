@@ -125,10 +125,8 @@ RetStmt : ret constant scolon
 PrintStmt : print ob PrintHelp cb scolon;
 
 PrintHelp : id
-          | literal
           | constant
           | id add PrintHelp
-          | literal add PrintHelp
           | constant add PrintHelp;
 
 Loop : Fo 
@@ -141,22 +139,17 @@ ForHelp : Declstmt
 
 ForBody : 
         | Stmt ForBody
-        | Break scolon
-        | Continue scolon;
+        | Break scolon ForBody
+        | Continue scolon ForBody;
 
+Whil : While ob predicate cb fob WhileBody fcb;
 
-
+WhileBody : 
+          | Stmt WhileBody
+          | Break scolon WhileBody
+          | Continue scolon WhileBody;   
 
 UopStmt : id uop;
-
-
-
-
-
-
-
-
-
 
 %%
 
