@@ -45,7 +45,9 @@ StructBody : Declstmt
 /* Struct body cannot be empty */
 
 Declstmt : Type IDCID1 scolon
-         | Struct id IDCID scolon;    
+         | Struct id IDCID scolon
+         | point IDCID2
+         | triangle IDCID3;    
 
 IDCID : id comma IDCID 
       | id sqob number sqcb comma IDCID
@@ -56,8 +58,34 @@ IDCID1 : id assignment predicate comma IDCID1
        | id comma IDCID1 
        | id sqob number sqcb comma IDCID1
        | id 
-       | id assignment predicate;
+       | id assignment predicate
        | id sqob number sqcb;
+    
+IDCID2 : id assignment id comma IDCID2
+       | id assignment ob predicate comma predicate cb IDCID2 
+       | id comma IDCID2 
+       | id sqob number sqcb comma IDCID2
+       | id 
+       | id assignment id
+       | id assignment ob predicate comma predicate cb
+       | id sqob number sqcb;
+
+IDCID3 : id assignment id comma IDCID3
+       | id assignment ob Point comma Point comma Point cb IDCID3 
+       | id comma IDCID3 
+       | id sqob number sqcb comma IDCID3
+       | id 
+       | id assignment id
+       | id assignment ob Point comma Point comma Point cb
+       | id sqob number sqcb;
+
+Point : id  
+      | ob predicate comma predicate cb;
+
+  
+
+
+  
 
 constant : number 
          | fnumber
@@ -106,9 +134,22 @@ ElseHelp :
          | Else CondStmt;
 
 ExprStmt : id assignment predicate scolon
-         | id dot id assignment predicate;
+         | id dot id assignment predicate
+         | id assignment ob predicate comma predicate cb;
 
-CallStmt : id ob CallArguments cb;
+CallStmt : id ob CallArguments cb
+         | slope ob Point comma Point cb
+         | area ob Points cb
+         | centroid ob Points cb
+         | cc ob Points cb    
+         | cr ob Points cb
+         | ir ob Points cb
+         | ic ob Points cb
+         | oc ob Point comma Point comma Point  cb 
+            ;
+
+Points : Point comma Points
+       | Point 
 
 CallArguments : id
               | constant
