@@ -5,8 +5,8 @@
 
     int yylex();
     int yyerror(char *s);
-    int main = 0;
     // used for handling errors such as manin function not found
+    extern FILE* ps;
     extern FILE* yyin;
     extern FILE* yyout;
     
@@ -27,27 +27,27 @@
 <str>ret <str>For <str>While <str>True <str>False <str>print <str>scan <str>Struct 
 <str>Typedef <str>Break <str>Continue <str>sqob <str>sqcb <str>ob <str>cb <str>fob 
 <str>fcb <str>scolon <str>comma <str>dot <str> slope <str>area  <str>point  <str>centroid 
-<str>cc  <str>ic  <str>oc  <str>cr  <str>ir  <str>triangle <str>main <str>id 
+<str>cc  <str>ic  <str>oc  <str>cr  <str>ir  <str>triangle  <str>id 
 
 %%
 
 S : 
-  | StructHelp S
-  | Method S;
+  | {fprintf(ps,"struct");} StructHelp {fprintf(ps,"end of struct");} S 
+  | {fprintf(ps,"Method");} Method {fprintf(ps,"end of Method");} S ; 
 /* Main method is mandatary in our language GeoC. It will be implemented by semantic deadline */
 
 Bop : bop | add
 
 StructHelp : Struct id fob StructBody fcb scolon;
 
-StructBody : Declstmt 
-           | Declstmt StructBody;
+StructBody : Declstmt {fprintf(ps,"Decleration stmt"); }
+           | Declstmt {fprintf(ps,"Decleration stmt"); } StructBody;
 /* Struct body cannot be empty */
 
 Declstmt : Type IDCID1 scolon
          | Struct id IDCID scolon
-         | point IDCID2
-         | triangle IDCID3;    
+         | point IDCID2 scolon
+         | triangle IDCID3 scolon;    
 
 IDCID : id comma IDCID 
       | id sqob number sqcb comma IDCID
@@ -82,11 +82,6 @@ IDCID3 : id assignment id comma IDCID3
 Point : id  
       | ob predicate comma predicate cb;
 
-  
-
-
-  
-
 constant : number 
          | fnumber
          | True
@@ -96,7 +91,8 @@ constant : number
 
 Method : Type id ob Arguments cb fob MethodBody fcb;
 
-Arguments : Type id 
+Arguments : 
+          | Type id 
           | Type id comma Arguments;
 
 MethodBody : 
@@ -104,15 +100,17 @@ MethodBody :
 /* return statement for a non void function is also mandatory in our language. 
 It will be implemented by the semantic deadline  */
 
-Stmt : Declstmt
-     | CallStmt scolon 
-     | ExprStmt
-     | Loop
-     | CondStmt
-     | UopStmt
-     | RetStmt
-     | PrintStmt 
-     | fob MethodBody fcb
+Stmt : Declstmt {fprintf(ps,"Decleration stmt"); }
+     | CallStmt scolon {fprintf(ps,"Call stmt"); }
+     | ExprStmt {fprintf(ps, "Expression stmt"); }
+     | Loop 
+     | CondStmt 
+     | UopStmt {fprintf(ps, "Unary operation"); }
+     | RetStmt {fprintf(ps, "Return stmt"); }
+     | PrintStmt {fprintf(ps, "Print stmt"); }
+     | Break scolon {fprintf(ps,"Break stmt"); } 
+     | Continue scolon {fprintf(ps,"Continue stmt"); } ;
+     | fob MethodBody fcb;
 /* Empty scopes are not allowed in our language */
 
 predicatePart : constant
@@ -125,17 +123,15 @@ predicate : predicatePart
           | predicatePart Bop predicate
           | predicatePart comp predicate;  
 
-/* calling other functions in predicated is not allowed in GeoC */
-
-CondStmt : If ob predicate cb fob MethodBody fcb ElseHelp;
+CondStmt : If ob predicate cb {fprintf(ps,"If stmt"); }fob MethodBody fcb {fprintf(ps,"end of If stmt"); }ElseHelp;
 
 ElseHelp : 
-         | Else fob MethodBody fcb
-         | Else CondStmt;
+         | Else  {fprintf(ps,"Else stmt"); }fob MethodBody fcb {fprintf(ps,"end of Else stmt"); }
+         | Else {fprintf(ps,"Else"); }CondStmt;
 
 ExprStmt : id assignment predicate scolon
-         | id dot id assignment predicate
-         | id assignment ob predicate comma predicate cb;
+         | id dot id assignment predicate scolon
+         | id assignment ob predicate comma predicate cb scolon;
 
 CallStmt : id ob CallArguments cb
          | slope ob Point comma Point cb
@@ -145,13 +141,13 @@ CallStmt : id ob CallArguments cb
          | cr ob Points cb
          | ir ob Points cb
          | ic ob Points cb
-         | oc ob Point comma Point comma Point  cb 
-            ;
+         | oc ob Point comma Point comma Point  cb;
 
 Points : Point comma Points
        | Point 
 
-CallArguments : id
+CallArguments : 
+              | id
               | constant
               | id comma CallArguments
               | constant comma CallArguments  
@@ -170,30 +166,28 @@ PrintHelp : id
 Loop : Fo 
      | Whil;
 
-Fo : For ob ForHelp scolon predicate scolon UopStmt cb fob ForBody fcb;
+Fo : For ob ForHelp  predicate scolon id uop cb { fprintf(ps,"For loop"); } fob ForBody fcb { fprintf(ps,"end of For loop"); } ;
 
 ForHelp : Declstmt 
         | ExprStmt;
 
 ForBody : 
-        | Stmt ForBody
-        | Break scolon ForBody
-        | Continue scolon ForBody;
+        | Stmt ForBody;
 
-Whil : While ob predicate cb fob WhileBody fcb;
+Whil : While ob predicate cb  { fprintf(ps,"While loop"); } fob WhileBody fcb { fprintf(ps,"end of While loop"); } ;
 
 WhileBody : 
-          | Stmt WhileBody
-          | Break scolon WhileBody
-          | Continue scolon WhileBody;   
+          | Stmt WhileBody;
+             
 
-UopStmt : id uop;
+UopStmt : id uop scolon;
 
 %%
 
 int yyerror(char *s){
-
+    return 0;
 }
+
 int main(int argc, char* argv[])
 {
     #ifdef YYDEBUG
@@ -201,6 +195,9 @@ int main(int argc, char* argv[])
     #endif
     FILE *fp = fopen(argv[1],"r");
     yyin = fp;
+    ps = fopen("output.txt", "w");
+    /* fprintf(ps,"Hi\n"); */
     yyparse();
+    fclose(ps);
     return 0;
 }

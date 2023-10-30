@@ -3,12 +3,13 @@
     #include<stdlib.h>
     #include<string.h>
     #include "parse_source.tab.h"
+    FILE * ps;
    int state = 0;
 //    we might need state to resolve some issues that come with scope 
 
 %}
 
-
+blanks [ \t]+
 letter [a-zA-Z]
 digit [0-9]
 number [-]?[1-9]?{digit}+
@@ -44,7 +45,7 @@ false ("false")
 slope ("Slope")
 area ("Area")
 cc ("Circumcenter")
-point ("Point")
+point ("point")
 ic ("Incenter")
 centroid ("Centroid")
 oc ("Orthocenter")
@@ -55,15 +56,14 @@ struct ("struct")
 typedef ("typedef")
 break ("break")
 continue ("continue")
-main ("main")
 dot (".")
 
 %%
-^[ ]*\n {yylineno++;
+\n {yylineno++;
+        fprintf(ps,"\n");
 /* This line is there to increase the count even in case of empty lines. useful while showing errors */}
 
-
-
+{blanks} { } 
 
 {type}     {return Type; }
 {void}     {return Void; }
@@ -76,7 +76,7 @@ dot (".")
 
 {assignment} {return assignment; }
 {bop}      {return bop; }
-{addition} {return addition;}
+{addition} {return add;}
 {uop}      {return uop; }
 {comparision}  {return comp; }
 {logic}    {return logic; }
@@ -117,7 +117,6 @@ dot (".")
 {cr}       {return cr;}
 {ir}       {return ir;}
 {triangle} {return triangle;}
-{main}     {return main;}
 
 {id}       {return id; }
 
