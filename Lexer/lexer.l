@@ -115,7 +115,7 @@ dot (".")
 
 {id}       {fprintf(pt,"identifier: %s\n",yytext); }
 
-. {printf("lexical error: token %s is undefined\n",yytext); return 0; }
+. {fprintf(pt,"lexical error: token %s is undefined\n",yytext); return 0; }
 
 %%
 
