@@ -9,7 +9,7 @@
 blanks [ \t]+
 letter [a-zA-Z]
 digit [0-9]
-number "-"?[1-9]{digit}*
+number "-"?[1-9]?{digit}*
 fnumber {number}("."){digit}+
 bop ("-"|"*"|"/"|"%")
 addition("+")
