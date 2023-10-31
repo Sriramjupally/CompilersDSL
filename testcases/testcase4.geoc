@@ -1,0 +1,21 @@
+int main(){
+    int x = 1, y = 20;
+
+    while(x != 10){
+        long g;
+        for(int i = 0; i < 10; i++){
+            print("The value of i in " + x +  "th iteration is" + i );
+            if(x + i < 5){
+                print("The value of the sum of x and i is less than 5"  );
+            } else if (x + i == 5){
+                print("The value of the sum of x and i is equal to 5"  );
+                continue;
+            }else{
+                print("The value of the sum of x and i is greater than 5"  );
+                break;
+            }
+
+        }
+    }
+    return 0;
+}

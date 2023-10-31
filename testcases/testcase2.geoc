@@ -1,0 +1,13 @@
+int main(){
+    point a, b, c = (3,4);
+    float x = 12.0 , y ;
+    triangle t = (a, b, c);
+    a = (3 + 4, 4 - 3);
+    int i , j = 2;
+    x = 7.0;
+    i = 12;
+    x = x + j;
+    a = (x,i);
+    x++;
+    return 0;
+}

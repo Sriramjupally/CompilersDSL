@@ -1,0 +1,8 @@
+int main(){
+    int x, _ab;
+    x = 2;
+    if(x==2){
+        print("The value of x is " + x  );
+    }
+    return 0;
+}
