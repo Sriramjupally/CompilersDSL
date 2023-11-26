@@ -1,1 +1,26 @@
+int abcd(int i, float f, string s, bool b, double d, long l, char c){
+    int a,bc;
+    float nm;
+    {
+        int a;
+    }
+    if(i==0){
+        float nm;
+    }
+    for(i = 0; i < s; i++){
+        int bc;
+    }
+    float cd;
+    while(f < cd){
+        int a;
+    }
+    string de;
+    int gh = a ;  
+    bool hj;
+    efg =  a + bc;
+    return gh;
+}
 
+int main(){
+    return 0;
+}
