@@ -1,0 +1,12 @@
+bool born(int a, int b, int c){
+    point p1, p2;
+    p1 = (13.8, 12.4);
+    p2 = (13.8 + 1, 12.4 - 1);
+    if(p1.x > p2.x || p1.y < p2.y ){
+        return true;
+    }else if(p1.x == p2.x || p1.y <= p2.y){
+        return true;
+    }else{
+        return false;
+    }
+}
