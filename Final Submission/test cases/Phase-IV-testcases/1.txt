@@ -1,0 +1,15 @@
+int main(){
+    point p1, p2;
+    p1 = (3,4);
+    p2 = (5,5);
+    float f;
+    if(p1.x < p2.x){
+        float d = slope(p1, p2);
+        f = d;
+    }else {
+        float g = slope(p1, p2);
+        f =  g;
+    }
+    print << f; 
+    return 0;
+}
