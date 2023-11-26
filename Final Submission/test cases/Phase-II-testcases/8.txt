@@ -1,0 +1,11 @@
+int main(){
+    point p1, p2, p3, p4[10];
+    point p5 = p2;
+
+    int geometry(){
+        int a;
+        return 0;
+    }
+    
+    return 0;
+}
