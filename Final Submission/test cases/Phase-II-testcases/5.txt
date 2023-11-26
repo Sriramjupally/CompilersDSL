@@ -1,0 +1,13 @@
+int mnc(int m, int n){
+    float f = 113.72;
+    string s = "Hello world";
+    int a[10], c = 12;
+    inti d;
+    d = c + 10;
+    d++;
+    d--;
+    f = f/d;
+    f = f + 1;
+    d = d + s;
+    return d;
+}
