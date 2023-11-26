@@ -1,0 +1,37 @@
+int abs(int a, int b, float f, point p, double d){
+    int c = 4, de, fr, bc[12], ef[10], gh = 1, ij = 12 , kl[111];
+    de = 10;
+    int m = 12, n = b, o, q[10], r, s = 14, t, u = 12;
+    point p1, p2, p3;
+    point p4 = p1, p5, p6 = p3;
+    c = 3 + 5 - a + de/ b - c % 4 + ij;
+    p1 = (3.41 + c - gh/ij, 4.42);
+    p1.x = f;
+    c++;
+    return b;
+}
+
+int main(){
+    int c;
+    int b;
+    point p2;
+    p2 =(3,4);
+    point p3;
+    p3.x = p2.x +1;
+    p3.y = p2.y - 1;
+    float f;
+    f = slope(p2,p3);
+    point p4;
+    double d;
+    if(c > 10){
+        int a = 20;
+        b = 4;
+    }else if (c > 5){
+        print << "The value of c is" << c;
+    }else{
+        return c;
+    }
+    c = 2 + abs(10, b, 2.3, p2, d );
+    print << "The value of c after all operations is " << c; 
+    return 0;
+}
