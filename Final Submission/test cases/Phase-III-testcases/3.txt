@@ -1,0 +1,27 @@
+point point_adder(point a, point b){
+    point c;
+    c.x = a.x + b.x;
+    c.y = a.y + b.y;
+    return c;
+}
+
+int hello(int m, int n){
+    float f;
+    point a;
+    a = (3.42, 4.75);
+    point b;
+    b = (1.2, 3.4);
+    point c;
+    c = point_adder(a,b);
+    f = slope(a,b);
+    float d = area(a, b, c);
+    if(c.x < 5){
+         return 0;
+    }else{
+         return 1;
+    }  
+}
+
+int main(){
+    return 0;
+}
