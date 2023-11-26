@@ -1,0 +1,19 @@
+int func1(int par1, string par2, float par3){
+    string s = "Just for fun";
+    return 0;
+}
+
+int func2(){
+    int i = 10;
+    int j;
+    while(i > 4){
+        j = func1(10, "Hi", 12.4);
+    }
+    int a;
+    string b;
+    float c;
+    for(j = 0; j < 10; j++){
+        j = func1(a,b,c);
+    }
+    return i;
+}
