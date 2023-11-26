@@ -352,3 +352,318 @@ IDCID2 : id assignment id comma IDCID2{
        | id sqob number sqcb{
             symbol_names.push_back( make_pair($1.value, 1) );
 };
+Ihelp1 : Ihelp2 comma predicate{
+    predicate_type.clear();
+};
+
+Ihelp2  : id assignment ob predicate{
+    symbol_names.push_back( make_pair($1.value, 0) );
+    predicate_type.clear();
+};
+
+
+
+IDCID3 : id assignment id comma IDCID3{
+                symbol_names.push_back( make_pair($1.value, 0) );
+                stab_entry *a = new stab_entry;
+                a = is_symbol_declared($3.value, parse_scope, func_name);
+                decl_predicate_type.push_back(a->datatype);
+        }
+       | id assignment ob Point comma Point comma Point cb IDCID3{
+              symbol_names.push_back( make_pair($1.value, 0) );
+       } 
+       | id comma IDCID3{
+            symbol_names.push_back( make_pair($1.value, 0) );
+         } 
+       | id sqob number sqcb comma IDCID3{
+            symbol_names.push_back( make_pair($1.value, 1) );
+         }
+       | id{
+            symbol_names.push_back( make_pair($1.value, 0) );
+         } 
+       | id assignment id{
+                symbol_names.push_back( make_pair($1.value, 0) );
+                stab_entry *a = new stab_entry;
+                a = is_symbol_declared($3.value, parse_scope, func_name);
+                decl_predicate_type.push_back(a->datatype);
+        }
+       | id assignment ob Point comma Point comma Point cb{
+            symbol_names.push_back( make_pair($1.value, 0) );
+       }
+       | id sqob number sqcb{
+            symbol_names.push_back( make_pair($1.value, 1) );
+};
+
+Point : id {
+            inbuiltcallhelp = $1.value;
+        } 
+      | ob predicate comma predicate cb{
+        predicate_type.clear();
+      };
+
+constant : number {
+            const_type = "int";
+            const_value = $1.value ;
+        }
+         | fnumber{
+            const_type = "float";
+            const_value = $1.value ;
+         }
+         | True{
+            const_type = "bool";
+            const_value = $1.value ;
+         }
+         | False{
+            const_type = "bool";
+            const_value = $1.value ;
+         }
+         | literal{
+            const_type = "string";
+            const_value = $1.value ;
+         }
+         | cliteral{
+            const_type = "char";
+            const_value = $1.value ;
+         };
+
+Method : MethodHeader MethodBody fcb {
+    parse_scope--;
+    stabs.clear();
+    fout << "}" << endl;
+};
+
+MethodHeader :  Type id ob Arguments cb fob {
+                            func_name = $2.value;
+                            // cout <<  "cp1" << endl;
+                            // for(int i =0; i < paramlist.size(); i++){
+                            //     cout << i << endl;
+                            //     cout << paramlist[i]->pname << endl;
+                            //     cout << paramlist[i]->pdatatype << endl;
+                            //     cout << paramlist[i]->is_array << endl;
+                            
+                            // }
+                            reverse(paramlist.begin(), paramlist.end());
+                            // cout << "cp100" << endl;
+                            
+                            bool b = insert_ftab($2.value, $1.value, 0, paramlist );
+                            if(!b){
+                                yyerror("Function already declared");
+                                break; 
+                            }
+                            // print_ftab();
+                            // cout << "cp101" << endl;
+                            paramlist.clear();
+                            // cout << "cp102" << endl;
+                            // print_ftab();
+                            // cout << "cp103" << endl;
+                            parse_scope++;
+                            // cout << "cp104" << endl;
+
+                            reverse(method_printer.begin(), method_printer.end());
+                            fout << $1.value << " " << $2.value << "(";
+                            for(int i = 0; i < method_printer.size(); i++){
+                                fout << method_printer[i] << " ";
+                            }
+                            fout << "){" << endl;
+
+                            method_printer.clear();
+
+                        }   
+    | point id ob Arguments cb fob {
+                        func_name = $2.value;
+                        // cout <<  "cp1" << endl;
+                        // for(int i =0; i < paramlist.size(); i++){
+                        //     cout << i << endl;
+                        //     cout << paramlist[i]->pname << endl;
+                        //     cout << paramlist[i]->pdatatype << endl;
+                        //     cout << paramlist[i]->is_array << endl;
+                        
+                        // }
+                        reverse(paramlist.begin(), paramlist.end());
+                        // cout << "cp100" << endl;
+                        
+                        bool b = insert_ftab($2.value, $1.value, 0, paramlist );
+                        if(!b){
+                            yyerror("Function already declared");
+                            break; 
+                        }
+                        // cout << "cp101" << endl;
+                        paramlist.clear();
+                        // cout << "cp102" << endl;
+                        // print_ftab();
+                        // cout << "cp103" << endl;
+                        parse_scope++;
+                        // cout << "cp104" << endl;
+                        reverse(method_printer.begin(), method_printer.end());
+                        
+                        fout << $1.value << " " << $2.value << "(";
+                        for(int i = 0; i < method_printer.size(); i++){
+                            fout << method_printer[i] << " ";
+                        }
+                        fout << "){" << endl;
+
+                        method_printer.clear();
+};
+
+Arguments :  
+          | Type id {  
+                string temp = $1.value;
+                temp += " ";
+                temp += $2.value;
+                method_printer.push_back(temp);
+                // test();
+                // cout << $2.value << endl;
+                // cout << "cp2" << endl;
+                parlist_entry* a = new parlist_entry;
+                // cout << "cp2.1" << endl;
+                a->pname = $2.value;
+                // cout << "cp2.2" << endl;
+                a->pdatatype = $1.value;
+                // cout << "cp2.3" << endl;
+                a->is_array = 0;
+                // cout << "cp2.4" << endl;
+                paramlist.push_back(a);  
+            }
+          | point id {  
+                // test();
+                // cout << $2.value << endl;
+                // cout << "cp2" << endl;
+                parlist_entry* a = new parlist_entry;
+                // cout << "cp2.1" << endl;
+                a->pname = $2.value;
+                // cout << "cp2.2" << endl;
+                a->pdatatype = $1.value;
+                // cout << "cp2.3" << endl;
+                a->is_array = 0;
+                // cout << "cp2.4" << endl;
+                paramlist.push_back(a);  
+                string temp = "point";
+                temp += " ";
+                temp += $2.value;
+                method_printer.push_back(temp);
+            }
+          | Type id comma  Arguments {   
+                // cout << "cp" <<  i << endl;
+                // i++;
+                string temp = $1.value;
+                temp += " ";
+                temp += $2.value;
+                temp += ",";
+                method_printer.push_back(temp);
+
+                parlist_entry* a = new parlist_entry;
+                a->pname = $2.value;
+                a->pdatatype = $1.value;
+                a->is_array = 0;
+                paramlist.push_back(a);   
+            }
+          | point id comma  Arguments {   
+                // cout << "cp" <<  i << endl;
+                // i++;
+                string temp = "point";
+                temp += " ";
+                temp += $2.value;
+                temp += ",";
+                method_printer.push_back(temp);
+
+                parlist_entry* a = new parlist_entry;
+                a->pname = $2.value;
+                a->pdatatype = $1.value;
+                a->is_array = 0;
+                paramlist.push_back(a);   
+};
+
+/* ArgumentsHelp : Arguments; */
+
+MethodBody : 
+           | Stmt MethodBody;
+/* return statement for a non void function is also mandatory in our language. 
+It will be implemented by the semantic deadline  */
+
+Stmt : Declstmt 
+     | CallStmt scolon 
+     | ExprStmt 
+     | Loop 
+     | CondStmt 
+     | UopStmt 
+     | RetStmt 
+     | PrintStmt 
+     | Break scolon 
+     | Continue scolon
+     | stmtHelper MethodBody fcb{
+        parse_scope--;
+        stabs.pop_back();
+     };
+/* Empty scopes are not allowed in our language */
+
+stmtHelper : fob {
+    parse_scope++;
+    vector <stab_entry*> v;
+    stabs.push_back(v);
+};
+
+predicatePart : constant{
+                    arglist_entry* b = new arglist_entry;
+                    predicate_datatype = const_type;
+                    b->datatype = const_type;
+                    b->is_array = 0;
+                    predicate_printer.push_back(const_value);
+                    // cout << "pushing " << const_value << endl;
+                    // if(const_type == "int"){
+                    //     cout << "pushing " << consi << endl;
+                    // }
+                    // if(const_type == "float"){
+                    //     cout << "pushing " << consf << endl;
+                    // }
+                    // if(const_type == "bool"){
+                    //     cout << "pushing " << consb << endl;
+                    // }
+                    // if(const_type == "string"){
+                    //     cout << "pushing " << conss << endl;
+                    // }
+                    // if(const_type == "char"){
+                    //     cout << "pushing " << consc << endl;
+                    // }
+                    predicate_type.push_back(b);
+                    // const_type = "";
+                }
+              | id{
+                    string temp = $1.value;
+                    predicate_printer.push_back(temp);
+
+
+                    arglist_entry* b = new arglist_entry;
+                    stab_entry* a = new stab_entry;
+                    a = is_symbol_declared($1.value, parse_scope, func_name);
+                    if(a==NULL){
+                        yyerror("variable not declared before use");
+                    }else{
+                        predicate_datatype = a->datatype;
+                        b->datatype = a->datatype;
+                        b->is_array = a->is_array;
+                        predicate_type.push_back(b);
+                    }
+              } 
+              | id dot id{
+                    string temp = $1.value;
+                    temp += ".";
+                    temp+= $3.value;
+                    predicate_printer.push_back(temp);
+
+                    arglist_entry* b = new arglist_entry;
+                    stab_entry* a = new stab_entry;
+                    a = is_symbol_declared($1.value, parse_scope, func_name);
+                    if(a==NULL){
+                        yyerror("variable not declared before use");
+                    }else{
+                        predicate_datatype = a->datatype;
+                        b->datatype = "float";
+                        b->is_array = a->is_array;
+                        predicate_type.push_back(b);
+                    }
+              } 
+              | CallStmt{
+                    predicate_printer.push_back(callhelp);
+                // Push back to predicate_type is happening at Call Stmt Non terminal rules
+              }
+              | ob predicate cb;
