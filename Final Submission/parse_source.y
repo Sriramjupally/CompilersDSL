@@ -667,3 +667,751 @@ predicatePart : constant{
                 // Push back to predicate_type is happening at Call Stmt Non terminal rules
               }
               | ob predicate cb;
+
+             
+predicate : predicatePart{
+                // for(int i = 0; i < predicate_type.size(); i++){
+                //         cout << predicate_type[i]->datatype << endl;
+                //     }
+                // predicate_type.clear();
+            }
+          | predicatePart logic predicate{
+             string temp = " ";
+             temp += $2.value;
+             temp += " ";
+             op_printer.push_back(temp);
+            predicate_datatype = "bool";
+            // for(int i = 0; i < predicate_type.size(); i++){
+            //             cout << predicate_type[i]->datatype << endl;
+            //         }
+            // predicate_type.clear();
+          }
+          | predicatePart bop predicate{
+                 string temp = " ";
+                 temp += $2.value;
+                 temp += " ";
+                 op_printer.push_back(temp);
+                predicate_datatype = predicate_type[0]->datatype;
+                // for(int i = 0; i < predicate_type.size(); i++){
+                //         cout << predicate_type[i]->datatype << endl;
+                //     }
+                for(int i = 0; i < predicate_type.size(); i++){
+                    string dtype = predicate_type[i]->datatype;
+                    if(dtype == "point"){
+                        yyerror("Operation is not supported on points");
+                    }
+                    if(dtype == "triangle"){
+                        yyerror("Operation is not supported on triangles");
+                    }
+                    if(dtype == "string"){
+                        yyerror("Operation is not supported on strings");
+                    }
+                    if(dtype == "char"){
+                        yyerror("Operation is not supported on characters");
+                    }
+                    if(dtype == "bool"){
+                        yyerror("Operation is not supported on Boolean elements");
+                    }
+                }
+                string modulo = "%";
+                if($2.value == modulo){
+                    predicate_datatype = "int";
+                }
+                else{
+                    string dtype;
+                    for(int i = 0; i < predicate_type.size(); i++){
+
+                        dtype = predicate_type[i]->datatype;
+
+                        if(predicate_datatype == "int" && dtype == "float"){
+                            predicate_datatype = "float";
+                        }
+                        if(predicate_datatype == "int" && dtype == "double"){
+                            predicate_datatype = "double";
+                        }
+
+                        if(predicate_datatype == "long" && dtype == "float"){
+                            predicate_datatype = "float";
+                        }
+                        if(predicate_datatype == "long" && dtype == "double"){
+                            predicate_datatype = "double";
+                        }                        
+                    }
+                }
+                // predicate_type.clear();
+
+           
+            }
+          | predicatePart add predicate{
+                op_printer.push_back(" + ");
+                // cout << op_printer.size() << endl;
+                string s = "+";
+                if($2.value == s){
+                    int x = predicate_type[0]->is_array;
+                    string y = predicate_type[0]->datatype;
+                    predicate_datatype = predicate_type[0]->datatype;
+                    // cout << predicate_type.size();
+                    // for(int i = 0; i < predicate_type.size(); i++){
+                    //     cout << predicate_type[i]->datatype << endl;
+                    // }
+                    // "int"|"char"|"string"|"bool"|"long"|"float"|"double"
+                    string i = "int";
+                    string c = "char";
+                    string str = "string";
+                    string b = "bool";
+                    string l = "long";
+                    string f = "float";
+                    string d = "double";
+                    // vector <string> v;
+                    string dtype;
+                    
+                    for(int i =0; i < predicate_type.size(); i++){
+
+                        dtype = predicate_type[i]->datatype;
+                        if(dtype == "point"){
+                            yyerror("Addition is not supported on points");
+                        }
+                        if(dtype == "triangle"){
+                            yyerror("Addition is not supported on triangles");
+                        }
+                        
+
+                        if(predicate_type[i]->is_array != x){
+                            yyerror("Cannot add an array and a non array element");
+                        }
+
+                        if(predicate_datatype == "int" && dtype == "char"){
+                            yyerror("Cannot add  an int element and a char element");
+                        }
+                        if(predicate_datatype == "int" && dtype == "string"){
+                            yyerror("Cannot add  an int element and a string element");
+                        }
+                        if(predicate_datatype == "int" && dtype == "float"){
+                            predicate_datatype = "float";
+                        }
+                        if(predicate_datatype == "int" && dtype == "double"){
+                            predicate_datatype = "double";
+                        }
+                        
+
+
+                        if(predicate_datatype == "long" && dtype == "char"){
+                            yyerror("Cannot add  a long element and a char element");
+                        }
+                        if(predicate_datatype == "long" && dtype == "string"){
+                            yyerror("Cannot add  a long element and a string element");
+                        }
+                        if(predicate_datatype == "long" && dtype == "float"){
+                            predicate_datatype = "float";
+                        }
+                        if(predicate_datatype == "long" && dtype == "double"){
+                            predicate_datatype = "double";
+                        }
+                        
+
+
+                        if(predicate_datatype == "float" && dtype == "char"){
+                            yyerror("Cannot add  a float element and a char element");
+                        }
+                        if(predicate_datatype == "float" && dtype == "string"){
+                            yyerror("Cannot add  a float element and a string element");
+                        }
+                        
+
+
+                        if(predicate_datatype == "double" && dtype == "char"){
+                            yyerror("Cannot add  a double element and a char element");
+                        }
+                        if(predicate_datatype == "double" && dtype == "string"){
+                            yyerror("Cannot add  a double element and a string element");
+                        }
+
+                        if(predicate_datatype == "bool" && dtype == "char"){
+                            yyerror("Cannot add  a bool element and a char element");
+                        }
+                        if(predicate_datatype == "bool" && dtype == "string"){
+                            yyerror("Cannot add  a bool element and a string element");
+                        }
+                        
+
+
+                        if(predicate_datatype == "string" && dtype == "int"){
+                            yyerror("Cannot add  a string element and an int element");
+                        }
+                        if(predicate_datatype == "string" && dtype == "float"){
+                            yyerror("Cannot add  a string element and a float element");
+                        }
+                        if(predicate_datatype == "string" && dtype == "bool"){
+                            yyerror("Cannot add  a string element and a bool element");
+                        }
+                        if(predicate_datatype == "string" && dtype == "long"){
+                            yyerror("Cannot add  a string element and a long element");
+                        }
+                        if(predicate_datatype == "string" && dtype == "double"){
+                            yyerror("Cannot add  a string element and a double element");
+                        }
+
+                        if(predicate_datatype == "char" && dtype == "int"){
+                            yyerror("Cannot add  a char element and an int element");
+                        }
+                        if(predicate_datatype == "char" && dtype == "float"){
+                            yyerror("Cannot add  a char element and a float element");
+                        }
+                        if(predicate_datatype == "char" && dtype == "bool"){
+                            yyerror("Cannot add  a char element and a bool element");
+                        }
+                        if(predicate_datatype == "char" && dtype == "long"){
+                            yyerror("Cannot add  a char element and a long element");
+                        }
+                        if(predicate_datatype == "char" && dtype == "double"){
+                            yyerror("Cannot add  a char element and a double element");
+                        }
+                        if(predicate_datatype == "char" && dtype == "char"){
+                            predicate_datatype = "string";
+                        }
+                        if(predicate_datatype == "char" && dtype == "string"){
+                            predicate_datatype = "string";
+                        }
+                        
+                    }
+
+                
+                    // predicate_type.clear();
+                }
+            }
+          | predicatePart comp predicate{
+                 string temp = " ";
+                 temp += $2.value;
+                 temp += " ";
+                 op_printer.push_back(temp);
+                predicate_datatype = "bool";
+                // predicate_type.clear();
+};  
+
+CondStmt : CondHelp1 ElseHelp;
+
+CondHelp1 : CondHelp MethodBody fcb{
+                fout << "}" << endl;
+                 parse_scope--;
+                stabs.pop_back();   
+            };
+
+CondHelp : CondHelp2 cb fob {
+                parse_scope++;
+                vector <stab_entry*> v;
+                stabs.push_back(v);
+            };
+
+CondHelp2 : If ob predicate{
+                if(elsehelp == 0){
+                    fout << "if(";
+                }else{
+                    fout << "else if(";
+                    elsehelp = 0;
+                }   
+                reverse(op_printer.begin(), op_printer.end());
+                // fout << $1.value << "= ";
+                
+                for(int i = 0; i < predicate_printer.size()-1; i++){
+                        fout << predicate_printer[i] << op_printer[i];
+                }
+                fout << predicate_printer[predicate_printer.size()-1];
+                fout << "){" << endl;
+
+
+                predicate_printer.clear();
+                op_printer.clear();
+
+                predicate_type.clear();
+};
+
+ElseHelp : 
+         | ElseHelp1 MethodBody fcb {
+                fout << "}" << endl;
+                 parse_scope--;
+                stabs.pop_back();   
+            }
+         | Ehelp1 CondStmt{
+            // elsehelp = 1;
+            // fout << "else ";
+         };
+
+Ehelp1 : Else{
+            elsehelp = 1;
+            // fout << "else ";
+         };
+
+ElseHelp1 : Else  fob{
+                fout << "else{" << endl;
+                parse_scope++;
+                vector <stab_entry*> v;
+                stabs.push_back(v); 
+            };
+
+ExprStmt : id assignment predicate scolon {
+
+                // cout << $1.value << " assignment is happening" << endl;
+
+                stab_entry* a = new stab_entry;
+                a = is_symbol_declared($1.value, parse_scope, func_name);
+                if(a== NULL){
+                    yyerror("Variable is not declared before use");
+                }else{
+                    if(a->datatype != predicate_datatype){
+                        yyerror("Expression LHS and RHS datatypes does not match");
+                    }
+                }
+                // cout << predicate_printer.size() << "at line no" << yylineno;
+                // cout << op_printer.size() << "at line no" << yylineno;
+
+                reverse(op_printer.begin(), op_printer.end());
+                fout << $1.value << "= ";
+                
+                for(int i = 0; i < predicate_printer.size()-1; i++){
+                        fout << predicate_printer[i] << op_printer[i];
+                }
+                fout << predicate_printer[predicate_printer.size()-1];
+                fout << ";" << endl;
+
+
+                predicate_printer.clear();
+                op_printer.clear();
+                predicate_type.clear();
+
+           }
+         | id dot id assignment predicate scolon{
+
+                reverse(op_printer.begin(), op_printer.end());
+
+                fout << $1.value << "." << $3.value << "= ";
+                for(int i = 0; i < predicate_printer.size()-1; i++){
+                        fout << predicate_printer[i] << op_printer[i];
+                }
+                fout << predicate_printer[predicate_printer.size()-1];
+                fout << ";" << endl;
+
+                predicate_printer.clear();
+                op_printer.clear();
+                predicate_type.clear();
+         }
+         | Exprhelp comma predicate cb scolon{
+            fout << exprhelp << ".y= ";
+            for(int i = 0; i < predicate_printer.size()-1; i++){
+                     fout << predicate_printer[i] << op_printer[i];
+            }
+            fout << predicate_printer[predicate_printer.size()-1];
+            fout << ";" << endl;
+
+            predicate_printer.clear();
+            op_printer.clear();
+
+            predicate_printer.clear();
+            op_printer.clear();
+            predicate_type.clear();
+         };
+         /* | id assignment ob Point comma Point comma Point cb scolon; */
+
+Exprhelp : id assignment ob predicate{
+            exprhelp = $1.value;
+            fout << $1.value << ".x= ";
+            reverse(op_printer.begin(), op_printer.end());
+
+            for(int i = 0; i < predicate_printer.size()-1; i++){
+                     fout << predicate_printer[i] << op_printer[i];
+            }
+            fout << predicate_printer[predicate_printer.size()-1];
+            fout << ";" << endl;
+
+            predicate_printer.clear();
+            op_printer.clear();
+
+            predicate_type.clear();
+         };
+
+CallStmt : id ob CallArguments cb{
+             bool b = check_func_exists($1.value);
+             if(b){
+                // cout << predicate_printer.size() << "at line no" << yylineno;
+                // cout << op_printer.size() << "at line no" << yylineno;
+                // cout << "Yes at line " << yylineno << endl;
+                ftab_entry* a = new ftab_entry;
+                // reverse(arglist.begin(), arglist.end());
+                // for(int i = 0; i < arglist.size(); i++){
+                //     cout << arglist[i]->datatype << endl;
+                // }
+                
+                a = check_func($1.value, arglist );
+                //  cout << "cp" << endl;
+                if(a == NULL){
+                    yyerror("Function parameters and arguments didn't match");
+                }
+                 
+                //  else{
+                //     cout << "Hello" << endl;
+                //  }
+
+                string temp;
+                callhelp = $1.value;
+                callhelp += "(";
+                // fout << $1.value << "(";
+                for(int i = 0; i < call_printer.size() - 1; i++){
+                    // fout <<  call_printer[i] << ", ";
+                    callhelp += call_printer[i] + ", ";
+                }
+                if(call_printer.size() > 0){
+                    callhelp += call_printer[call_printer.size() - 1];
+                }
+                callhelp += ")";
+                call_printer.clear();
+
+
+
+                predicate_datatype = a ->ret_type;
+                arglist_entry* c = new arglist_entry;
+                c->datatype = a->ret_type;
+                c->is_array = a->is_array;
+                predicate_type.push_back(c);
+
+                arglist.clear();
+             }else{
+                yyerror("Function not declared before use");
+             }
+
+
+
+         }
+         |  slopeHelp Point cb{
+                callhelp += inbuiltcallhelp + ")";
+         }
+         | distanceHelp Point cb{
+                callhelp += inbuiltcallhelp + ")";
+         }
+         | area ob id comma id comma id cb{
+            callhelp = $1.value;
+            callhelp += "(";
+            callhelp = $3.value;
+            callhelp += ",";
+            callhelp = $5.value;
+            callhelp += ",";
+            callhelp = $7.value;
+            callhelp += ")";
+         }
+         | centroid ob id comma id comma id cb{
+            callhelp = $1.value;
+            callhelp += "(";
+            callhelp = $3.value;
+            callhelp += ",";
+            callhelp = $5.value;
+            callhelp += ",";
+            callhelp = $7.value;
+            callhelp += ")";
+         }
+         | cc ob id comma id comma id cb{
+            callhelp = $1.value;
+            callhelp += "(";
+            callhelp = $3.value;
+            callhelp += ",";
+            callhelp = $5.value;
+            callhelp += ",";
+            callhelp = $7.value;
+            callhelp += ")";
+         }    
+         | cr ob id comma id comma id cb{
+            callhelp = $1.value;
+            callhelp += "(";
+            callhelp = $3.value;
+            callhelp += ",";
+            callhelp = $5.value;
+            callhelp += ",";
+            callhelp = $7.value;
+            callhelp += ")";
+         }
+         | ir ob id comma id comma id cb{
+            callhelp = $1.value;
+            callhelp += "(";
+            callhelp = $3.value;
+            callhelp += ",";
+            callhelp = $5.value;
+            callhelp += ",";
+            callhelp = $7.value;
+            callhelp += ")";
+         }
+         | ic ob id comma id comma id cb{
+            callhelp = $1.value;
+            callhelp += "(";
+            callhelp = $3.value;
+            callhelp += ",";
+            callhelp = $5.value;
+            callhelp += ",";
+            callhelp = $7.value;
+            callhelp += ")";
+         }
+         | oc ob id comma id comma id  cb{
+            callhelp = $1.value;
+            callhelp += "(";
+            callhelp = $3.value;
+            callhelp += ",";
+            callhelp = $5.value;
+            callhelp += ",";
+            callhelp = $7.value;
+            callhelp += ")";
+         };
+
+slopeHelp : slope ob Point comma{
+                callhelp = $1.value;
+                callhelp += "(";
+                callhelp += inbuiltcallhelp + ",";
+            };
+distanceHelp : distance ob Point comma{
+                callhelp = $1.value;
+                callhelp += "(";
+                callhelp += inbuiltcallhelp + ",";
+            };
+            
+
+
+/* Points : Point comma Points
+       | Point  */
+
+CallArguments : 
+              | id  {
+                    string temp = $1.value;
+                    call_printer.push_back(temp);
+                    // cout << "cp1" << endl;
+                    arglist_entry* a = new arglist_entry;
+                    // cout << "cp2" << endl;
+                    stab_entry* c = new stab_entry;
+                    c = is_symbol_declared($1.value, parse_scope, func_name );
+                    // cout << "cp3" << endl;
+                    if(c!= NULL){
+                        a->datatype = c->datatype;
+                        // cout << "cp4" << endl;
+                        a->is_array = c->is_array;
+                        // cout << "cp5" << endl;
+                        arglist.push_back(a);
+                        // cout << "cp6" << endl;
+                    }else{
+                        yyerror("variable not declared before use");
+                    }
+
+              }
+              | constant{
+                    call_printer.push_back(const_value);
+                    arglist_entry* a = new arglist_entry;
+                    a->is_array = 0;
+                    a->datatype = const_type;
+                    arglist.push_back(a);
+              }
+              | CallHelp1 comma CallArguments
+              | CallHelp comma CallArguments;
+
+CallHelp : constant{
+                     call_printer.push_back(const_value);
+                    arglist_entry* a = new arglist_entry;
+                    a->is_array = 0;
+                    a->datatype = const_type;
+                    arglist.push_back(a);
+              }  ;
+
+CallHelp1 : id{       
+                    string temp = $1.value;
+                     call_printer.push_back(temp);        
+                    arglist_entry* a = new arglist_entry;
+                    stab_entry* c = new stab_entry;
+                    c = is_symbol_declared($1.value, parse_scope, func_name );
+                    if(c!= NULL){
+                        a->datatype = c->datatype;
+                        a->is_array = c->is_array;
+                        arglist.push_back(a);
+                    }else{
+                        yyerror("variable not declared before use");
+                    }
+              };
+
+RetStmt : ret constant scolon{
+                fout << "return " << const_value << ";" << endl;
+                ftab_entry* a = new ftab_entry;
+                a = check_func_exists1(func_name);
+                if(a->ret_type != const_type){
+                    yyerror("The datatype of constant and return type of funcion does not match");
+                }
+                const_type = "";
+
+          }
+        | ret scolon{
+            fout << "return ;" << endl;
+        }
+        | ret id scolon{
+            fout << "return " << $2.value << ";" << endl;
+            stab_entry* a = new stab_entry;
+            a = is_symbol_declared($2.value, parse_scope, func_name);
+            if(a == NULL){
+                yyerror("variable not declared before use");
+            }else{
+                ftab_entry* b = new ftab_entry;
+                b = check_func_exists1(func_name);
+                if(b->ret_type != a->datatype){
+                    yyerror("The datatype of variable and return type of funcion does not match");
+                }
+            }
+        };
+
+PrintStmt : print printseperator PrintHelp scolon{
+                fout << "cout << ";
+                reverse(print_printer.begin(), print_printer.end());
+                for(int i = 0; i < print_printer.size() - 1; i++){
+                    fout << print_printer[i] << " << ";
+                }
+                fout <<  print_printer[print_printer.size() - 1] << " << endl;" << endl;
+                print_printer.clear();
+            };
+
+PrintHelp : id{
+                string temp = $1.value;
+                print_printer.push_back(temp);
+            }
+          | constant{
+                print_printer.push_back(const_value);
+          }
+          | id printseperator PrintHelp{
+                string temp = $1.value;
+                print_printer.push_back(temp);
+          }
+          | constant printseperator PrintHelp{
+            print_printer.push_back(const_value);
+          };
+
+Loop : Fo 
+     | Whil;
+
+Fo : ForHelp1 ForBody fcb{
+            parse_scope--;
+            stabs.pop_back(); 
+} ;
+ForHelp1 : For ob ForHelp  predicate scolon id uop cb fob{
+            predicate_type.clear();
+            parse_scope++;
+            vector <stab_entry*> v;
+            stabs.push_back(v); 
+           };
+ForHelp : Declstmt 
+        | ExprStmt;
+
+ForBody : 
+        | Stmt ForBody;
+
+Whil : WhileHelp WhileBody fcb{
+            parse_scope--;
+            stabs.pop_back(); 
+}  ;
+
+WhileHelp : While ob predicate cb fob {
+            parse_scope++;
+            vector <stab_entry*> v;
+            stabs.push_back(v); 
+           };
+WhileBody : 
+          | Stmt WhileBody;
+             
+
+UopStmt : id uop scolon{
+            // cout << "In lineno " << yylineno << endl;
+            fout << $1.value << $2.value << ";" << endl;
+            stab_entry* a = new stab_entry;
+            a = is_symbol_declared($1.value, parse_scope, func_name);
+            if(a==NULL){
+                yyerror("Variable is not declared before use");
+            }
+         }
+        |  id dot id uop scolon{
+            stab_entry* a = new stab_entry;
+            a = is_symbol_declared($1.value, parse_scope, func_name);
+            if(a==NULL){
+                yyerror("Variable is not declared before use");
+            }
+         };
+
+%%
+
+void yyerror(const char* s){
+	printf("%s at line number %d\n",s,yylineno);
+    fout << s << "at line number " << yylineno;
+    exit(0);
+}
+
+int main(int argc, char* argv[])
+{
+    /* #ifdef YYDEBUG */
+    /* yydebug = 1; */
+    /* #endif */
+    FILE *fp = fopen(argv[1],"r");
+    yyin = fp;
+   
+    /* fout << "hi" << endl;
+     */
+    /* ps = fopen("output.txt", "w"); */
+    /* fprintf(ps,"Hi\n"); */
+
+    
+
+    fout << "#include <iostream>" << endl;
+    fout << "#include <cmath>" << endl;
+    fout << "using namespace std;" << endl;
+    fout << "struct point{" << endl << "float x;" << endl << "float y;" << endl << "};" << endl;  
+    fout << "typedef struct point point;" << endl;
+
+    fout << "float slope(point p1, point p2){"  << endl;
+    fout << "   float f;" << endl;
+    fout << "   if(p1.x == p2.x && p1.y == p2.y){" << endl;
+    fout << "       return -1;" << endl;
+    fout << "   }else{" << endl;
+    fout << "       f = (p2.y - p1.y)/(p2.x - p1.x);" << endl;
+    fout << "   }" << endl;
+    fout << "   return f;" << endl;
+    fout << "}" << endl;
+
+    fout << "float distance(point p1, point p2){"  << endl;
+    fout << "   float f;" << endl;
+    fout << "   if(p1.x == p2.x && p1.y == p2.y){" << endl;
+    fout << "       return 0;" << endl;
+    fout << "   }else{" << endl;
+    fout << "       f = (p2.y - p1.y)*(p2.y - p1.y) + (p2.x - p1.x)*(p2.x - p1.x);" << endl;
+    fout << "       f = sqrt(f);" << endl;
+    fout << "   }" << endl;
+    fout << "   return f;" << endl;
+    fout << "}" << endl;
+
+    fout << "point centroid(point a, point b, point c){"  << endl;
+    fout << "   point p;"  << endl;
+    fout << "   p.x = (a.x + b.x + c.x)/3;"  << endl;
+    fout << "   p.y = (a.y + b.y + c.y)/3;"  << endl;
+    fout << "   return p;"  << endl;
+    fout << "}" << endl;
+
+    fout << "float area(point a, point b, point c){"  << endl;
+    fout << "   if(slope(a,b) == slope(b,c)){"  << endl;
+    fout << "      return 0;"  << endl;
+    fout << "   }else{"  << endl;
+    fout << "      float f;"  << endl;
+    fout << "      f = 0.5*abs(a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y));"  << endl;
+    fout << "     return f;"  << endl;
+    fout << "   }"  << endl;
+    fout << "}"  << endl;
+
+    fout << "float cr(point a, point b, point c){"  << endl;
+    fout << "   float f1 = distance(a,b);"  << endl;
+    fout << "   float f2 = distance(b,c);"  << endl;
+    fout << "   float f3 = distance(c,a);"  << endl;
+    fout << "   float f4 = area(a,b,c);"  << endl;
+    fout << "   float f = f1*f2*f3/f4;"  << endl;
+    fout << "   return f;"  << endl;
+    fout << "}"  << endl;   
+
+
+
+    yyparse();
+    printf("The code is semantically and syntactically correct\n");
+    fout.close();
+    /* fclose(ps); */
+    return 0;
+}
