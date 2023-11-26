@@ -1,0 +1,13 @@
+int geomtry(){
+    float a2;
+    float a3;
+    point p1, p2;
+    p1 = (a2, a3);
+    p2 = (a3, a2);
+    a2 = distance(p1, p2);
+    if(a2 < a3){
+        return 0;
+    }else{
+        return 1;
+    }
+}
