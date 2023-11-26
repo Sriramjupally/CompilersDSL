@@ -1,0 +1,23 @@
+int abc(){
+    float a = 23.34;
+    float b;
+    point p1;
+    p1 = (a,b);
+    point p2 = p1;
+    p2.x = p1.x + 1.0;
+    p2.y = p1.y - 2;
+    point p3 = p2;
+    p3.x++;
+    p3.y--;
+    float s = slope(p1, p2);
+    point p4;
+    p4 = centroid(p1, p2, p3);
+    point p5;
+    p5 = centroid(p1,p2,p3);
+    float f2 = slope(p4,p5);
+    return f2;
+}
+
+int main(){
+    return 0;
+}
