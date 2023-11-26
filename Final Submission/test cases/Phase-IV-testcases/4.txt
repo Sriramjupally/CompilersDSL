@@ -1,0 +1,16 @@
+int main(){
+    point p1;
+    p1.x = 4.72/2;
+    p1.y = 3.14;
+    point p2;
+    p2 = (12,6);
+    point p3 = p2;
+    p3.x = p3.x/p3.y;
+    point c;
+    c = centroid(p1, p2, p3);
+    float d = 0.0;
+    d = d + distance(p1,c);
+    d = d + distance(p2,c); 
+    d = d + distance(p3,c);
+    print << "The sum of distances from centroid to the points is " << d;
+}
