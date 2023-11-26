@@ -1,0 +1,22 @@
+int abc(int hj, int kl){
+    int a = 10, b = 20, c, d= 4;
+    string s = "abc";
+    int de;
+    return de;
+}
+
+int def(int i, int j){
+    int a = 12, b = 14;
+    int d = abc(a,b);
+    if(d == a + b){
+        a = 0;
+    }
+    while( a != 0){
+        i--;
+    }
+    return a;
+}
+
+int main(){
+    return 0;
+}
